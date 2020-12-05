@@ -1,0 +1,460 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="content-type" content="text/html;charset=utf-8">
+  <title>main.py</title>
+  <link rel="stylesheet" href="pycco.css">
+</head>
+<body>
+<div id='container'>
+  <div id="background"></div>
+  <div class='section'>
+    <div class='docs'><h1>main.py</h1></div>
+  </div>
+  <div class='clearall'>
+  <div class='section' id='section-0'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-0'>#</a>
+      </div>
+      <p>Created on Sun Dec  6 01:56:09 2020</p>
+<p>@author: AAKRITI</p>
+<p>Space Science Project 1</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre><span></span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-1'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-1'>#</a>
+      </div>
+      <h3><span id="goal:-find-earth's-current-state-vectors" href="goal:-find-earth's-current-state-vectors"> Goal: Find Earth&rsquo;s current state vectors </span></h3>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-2'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-2'>#</a>
+      </div>
+      <p>Description:
+In this project, we shall compute the Earth’s position and velocity vector 
+(state vector) for today, midnight. Further, we shall compare the orbital speed 
+of our home planet with the theoretical expectation.</p>
+<p>We will be using a NASA toolkit SPICE (Spacecraft Planet Instrument C-matrix 
+Events) in Python3 using the wrapper library spiceypy. SPICE is a huge toolkit 
+that is being used by the Solar System science community to compute 
+miscellaneous space mission-relevant information like:</p>
+<ol>
+<li>Reference frames</li>
+<li>Positions and velocities</li>
+<li>Orientation/Pointing</li>
+<li>Size/Shapes/Physical parameters</li>
+<li>Time conversion</li>
+</ol>
+<p>SPICE requires auxiliary data called kernels to work properly. They are stored 
+at https://naif.jpl.nasa.gov/pub/naif/
+These kernels are separated into different categories, like:</p>
+<ol>
+<li>spk contain trajectory information of planetary bodies, spacecraft, etc.</li>
+<li>pck contain physical parameters of bodies like the size or orientation</li>
+<li>ik contain instrument-specific information that are e.g., mounted on a 
+  spacecraft</li>
+<li>ck contain information regarding the orientation of a spacecraft in space</li>
+<li>fk contain reference frame information that is needed to calculate positions 
+  in a less common reference system</li>
+<li>lsk contain time information that is crucial to convert e.g., the UTC time into
+  ephemeris time ET (a standard time format that is being used in space 
+  science and astronomy)</li>
+</ol>
+<p>For the current project, we have downloaded the relevant kernels and saved them
+under data/external folder.</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-3'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-3'>#</a>
+      </div>
+      <p><strong> We begin by first importing the spiceypy module.</strong></p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-4'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-4'>#</a>
+      </div>
+      <p>Import modules</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre><span class="kn">import</span> <span class="nn">spiceypy</span>
+<span class="kn">import</span> <span class="nn">datetime</span> <span class="kn">as</span> <span class="nn">dt</span>
+<span class="kn">import</span> <span class="nn">math</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-5'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-5'>#</a>
+      </div>
+      <p><strong> Main Function </strong></p>
+<p>We use the spkgeo function in SPICE to determine the state vector and the light 
+time (travel time of the light between the Sun and our home planet). Positions 
+are always given in km, velocities in km/s and times in seconds.</p>
+<p>Abstract:</p>
+<p>Compute the geometric state (position and velocity) of a target body 
+   relative to an observing body.</p>
+<p>Inputs:</p>
+<ol>
+<li>targ: NAIF ID of Object that shall be pointed at</li>
+<li>et: The ET of the computation</li>
+<li>ref: The reference frame. Here, it is ECLIPJ2000 </li>
+<li>obs:  NAIF ID of the observer respectively the center of our state vector 
+       computation</li>
+</ol>
+<p>The target object is Earth (NAIF ID = 399) and the observer is the Sun 
+(NAIF ID = 10). NAIF IDs are referenced from 
+https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/req/naif_ids.html
+The reference frame is the standard “Ecliptic Plane” of our planet set in the 
+year 2000. </p>
+<p>Outputs:</p>
+<ol>
+<li>
+<p>state: State of target. It contains the geometric position and velocity of 
+          the target body, relative to the observing body, at epoch
+          &lsquo;et&rsquo;. &lsquo;state&rsquo; has six elements: the first three contain
+          the target&rsquo;s position; the last three contain the
+          target&rsquo;s velocity. These vectors are transformed into
+          the specified reference frame.</p>
+</li>
+<li>
+<p>lt      Light Time. It is the one-way light time from the observing body 
+          to the geometric position of the target body
+          in seconds at the specified epoch. </p>
+</li>
+</ol>
+<p>We shall first calculate the ET (ephemeric time).   </p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre><span class="k">def</span> <span class="nf">main</span><span class="p">():</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-6'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-6'>#</a>
+      </div>
+      <p><strong> Convert today&rsquo;s time at midnight from UTC to ephemeric time ET </strong></p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-7'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-7'>#</a>
+      </div>
+      <p>Get today&rsquo;s date</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="n">date_today_utc</span> <span class="o">=</span> <span class="n">dt</span><span class="o">.</span><span class="n">datetime</span><span class="o">.</span><span class="n">today</span><span class="p">()</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-8'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-8'>#</a>
+      </div>
+      <p>Convert datetime to string, replacing time with midnight</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="n">date_today_utc</span> <span class="o">=</span> <span class="n">date_today_utc</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="s1">&#39;%Y-%m-</span><span class="si">%d</span><span class="s1">T00:00:00&#39;</span><span class="p">)</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-9'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-9'>#</a>
+      </div>
+      <p>Get time conversion information from a lsk kernel &lsquo;naif0012.tls&rsquo;</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="n">spiceypy</span><span class="o">.</span><span class="n">furnsh</span><span class="p">(</span><span class="s1">&#39;E:\Data Science Projects\Space Science\SpaceScience-P1-EarthStateVectors\data\external\_kernels\lsk/naif0012.tls&#39;</span><span class="p">)</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-10'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-10'>#</a>
+      </div>
+      <p>Convert UTC to ET using SPICE function &lsquo;utc2et&rsquo;</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="n">et_today</span> <span class="o">=</span> <span class="n">spiceypy</span><span class="o">.</span><span class="n">utc2et</span><span class="p">(</span><span class="n">date_today_utc</span><span class="p">)</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-11'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-11'>#</a>
+      </div>
+      <p><strong> Compute the position and velocity of the Earth with respect to the Sun </strong></p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-12'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-12'>#</a>
+      </div>
+      <p>First load a spk kernel &lsquo;de432s.bsp&rsquo; for positional information of planets. </p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-13'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-13'>#</a>
+      </div>
+      <p>How to find the relevant kernel?
+   At https://naif.jpl.nasa.gov/pub/naif/ we navigate to generic_kernels/spk/
+   planets, since we are trying to find the trajectory of our planet. We 
+   browse the aa_summaries.txt file. The last line of each summary shows the 
+   time range covered in each kernel. The time period of de432s is suitable.</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    
+    <span class="n">spiceypy</span><span class="o">.</span><span class="n">furnsh</span><span class="p">(</span><span class="s1">&#39;E:\Data Science Projects\Space Science\SpaceScience-P1-EarthStateVectors\data\external/_kernels/spk/de432s.bsp&#39;</span><span class="p">)</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-14'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-14'>#</a>
+      </div>
+      <p>Use spkgeo function to compute Earth state vectors   </p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="n">earth_state_wrt_sun</span><span class="p">,</span> <span class="n">earth_sun_lt</span> <span class="o">=</span> <span class="n">spiceypy</span><span class="o">.</span><span class="n">spkgeo</span><span class="p">(</span><span class="n">targ</span><span class="o">=</span><span class="mi">399</span><span class="p">,</span> \
+                                                        <span class="n">et</span><span class="o">=</span><span class="n">et_today</span><span class="p">,</span> \
+                                                        <span class="n">ref</span><span class="o">=</span><span class="s1">&#39;ECLIPJ2000&#39;</span><span class="p">,</span> \
+                                                        <span class="n">obs</span><span class="o">=</span><span class="mi">10</span><span class="p">)</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-15'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-15'>#</a>
+      </div>
+      <p>Report position vector of Earth</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="k">print</span><span class="p">(</span><span class="n">f</span><span class="s2">&quot;Position of Earth wrt Sun on {date_today_utc} is: </span><span class="se">\n</span><span class="s2"> </span><span class="se">\</span>
+<span class="s2">          {earth_state_wrt_sun}&quot;</span><span class="p">,</span> <span class="nb">file</span><span class="o">=</span><span class="n">outfile</span><span class="p">)</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-16'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-16'>#</a>
+      </div>
+      <p>Check whether computation is correct</p>
+<p>We check the veracity of the computed position vectors by using the result 
+   to compute the distance between Earth and Sun. If it is around 1 AU, then 
+   the computation is satisfactory. (&ldquo;around&rdquo; 1AU because Earth&rsquo;s orbit is 
+   elliptical, ot perfectly circular)</p>
+<p>Compute distance between Earth and Sun in km</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="n">earth_sun_distance</span> <span class="o">=</span> <span class="n">math</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">earth_state_wrt_sun</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">**</span><span class="mf">2.0</span> \
+                                 <span class="o">+</span> <span class="n">earth_state_wrt_sun</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">**</span><span class="mf">2.0</span> \
+                                 <span class="o">+</span> <span class="n">earth_state_wrt_sun</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span><span class="o">**</span><span class="mf">2.0</span><span class="p">)</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-17'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-17'>#</a>
+      </div>
+      <p>Convert km to AU</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="n">earth_sun_distance_AU</span> <span class="o">=</span> <span class="n">spiceypy</span><span class="o">.</span><span class="n">convrt</span><span class="p">(</span><span class="n">earth_sun_distance</span><span class="p">,</span> <span class="s1">&#39;km&#39;</span><span class="p">,</span> <span class="s1">&#39;AU&#39;</span><span class="p">)</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-18'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-18'>#</a>
+      </div>
+      <p>Report value</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="k">print</span><span class="p">(</span><span class="n">f</span><span class="s2">&quot;Current distance between the Earth and the Sun in AU: </span><span class="se">\</span>
+<span class="s2">          {earth_sun_distance_AU}&quot;</span><span class="p">,</span> <span class="nb">file</span><span class="o">=</span><span class="n">outfile</span><span class="p">)</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-19'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-19'>#</a>
+      </div>
+      <p><strong> Compute Orbital Speed of Earth </strong>
+First we compute actual current orbital speed of Earth around Sun</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="n">earth_orb_speed_wrt_sun</span> <span class="o">=</span> <span class="n">math</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">earth_state_wrt_sun</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span><span class="o">**</span><span class="mf">2.0</span> \
+                                  <span class="o">+</span> <span class="n">earth_state_wrt_sun</span><span class="p">[</span><span class="mi">4</span><span class="p">]</span><span class="o">**</span><span class="mf">2.0</span> \
+                                  <span class="o">+</span> <span class="n">earth_state_wrt_sun</span><span class="p">[</span><span class="mi">5</span><span class="p">]</span><span class="o">**</span><span class="mf">2.0</span><span class="p">)</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-20'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-20'>#</a>
+      </div>
+      <p>Report current orbital speed of Earth</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="k">print</span><span class="p">(</span><span class="n">f</span><span class="s2">&quot;Current orbital speed of the Earth around the Sun in km/s: </span><span class="se">\</span>
+<span class="s2">      {earth_orb_speed_wrt_sun}&quot;</span><span class="p">,</span> <span class="nb">file</span><span class="o">=</span><span class="n">outfile</span><span class="p">)</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-21'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-21'>#</a>
+      </div>
+      <p>Now we compute theoretical orbital speed of Earth around Sun</p>
+<p>For this, we need the equation to determine the orbital speed. We assume
+   that the Sun&rsquo;s mass is greater than the mass of the Earth and we assume 
+   that our planet is moving on an almost circular orbit. The orbit velocity 
+   $v_{\text{orb}}$ can be approximated with, where $G$ is the gravitational
+   constant, $M$ is the mass of the Sun and $r$ is the distance between the 
+   Earth and the Sun:
+   \begin{align}
+       v_{\text{orb}}\approx\sqrt{\frac{GM}{r}}
+   \end{align}</p>
+<p>The G*M values for different objects are found in a pck file &lsquo;gm_de431.tpc&rsquo;</p>
+<p>Load pck kernel for G*M value</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="n">spiceypy</span><span class="o">.</span><span class="n">furnsh</span><span class="p">(</span><span class="s1">&#39;E:\Data Science Projects\Space Science\SpaceScience-P1-EarthStateVectors\data\external/_kernels/pck/gm_de431.tpc&#39;</span><span class="p">)</span>
+    <span class="n">_</span><span class="p">,</span> <span class="n">GM_SUN</span> <span class="o">=</span> <span class="n">spiceypy</span><span class="o">.</span><span class="n">bodvcd</span><span class="p">(</span><span class="n">bodyid</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">item</span><span class="o">=</span><span class="s1">&#39;GM&#39;</span><span class="p">,</span> <span class="n">maxn</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-22'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-22'>#</a>
+      </div>
+      <p>Compute theoretical orbital speed</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="n">v_orb_func</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">gm</span><span class="p">,</span> <span class="n">r</span><span class="p">:</span> <span class="n">math</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">gm</span><span class="o">/</span><span class="n">r</span><span class="p">)</span>
+    <span class="n">earth_orb_speed_wrt_sun_theory</span> <span class="o">=</span> <span class="n">v_orb_func</span><span class="p">(</span><span class="n">GM_SUN</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">earth_sun_distance</span><span class="p">)</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-23'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-23'>#</a>
+      </div>
+      <p>Report theoretical value</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="k">print</span><span class="p">(</span><span class="n">f</span><span class="s2">&quot;Theoretical orbital speed of the Earth around the Sun in km/s: </span><span class="se">\</span>
+<span class="s2">      {earth_orb_speed_wrt_sun_theory}&quot;</span><span class="p">,</span> <span class="nb">file</span><span class="o">=</span><span class="n">outfile</span><span class="p">)</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-24'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-24'>#</a>
+      </div>
+      <h3><span id="run-the-script" href="run-the-script"> Run the script </span></h3>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre><span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-25'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-25'>#</a>
+      </div>
+      <p>Output file</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="n">outfile</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;E:\Data Science Projects\Space Science\SpaceScience-P1-EarthStateVectors\reports\outfile.txt&quot;</span><span class="p">,</span><span class="s2">&quot;a+&quot;</span><span class="p">)</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-26'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-26'>#</a>
+      </div>
+      <p>Call main function</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="n">main</span><span class="p">()</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-27'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-27'>#</a>
+      </div>
+      <p>Close output file</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="n">outfile</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+
+</pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+</div>
+</body>

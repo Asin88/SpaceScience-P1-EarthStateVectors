@@ -4,3 +4,9 @@ Position of Earth wrt Sun on 2020-12-06T00:00:00 is:
 Current distance between the Earth and the Sun in AU:           0.9852958753247343
 Current orbital speed of the Earth around the Sun in km/s:       30.2207027918603
 Theoretical orbital speed of the Earth around the Sun in km/s:       30.006115650918705
+Position of Earth wrt Sun on 2020-12-06T00:00:00 is: 
+           [ 4.05423300e+07  1.41712873e+08 -7.13207192e+03 -2.91177196e+01
+  8.09007308e+00 -8.40819392e-04]
+Current distance between the Earth and the Sun in AU:           0.9852958753247343
+Current orbital speed of the Earth around the Sun in km/s:       30.2207027918603
+Theoretical orbital speed of the Earth around the Sun in km/s:       30.006115650918705
