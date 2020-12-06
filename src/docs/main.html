@@ -411,10 +411,10 @@ First we compute actual current orbital speed of Earth around Sun</p>
       <div class='octowrap'>
         <a class='octothorpe' href='#section-24'>#</a>
       </div>
-      <h3><span id="run-the-script" href="run-the-script"> Run the script </span></h3>
+      <h3><span id="discussion-of-output" href="discussion-of-output"> Discussion of Output </span></h3>
     </div>
     <div class='code'>
-      <div class="highlight"><pre><span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span></pre></div>
+      <div class="highlight"><pre></pre></div>
     </div>
   </div>
   <div class='clearall'></div>
@@ -423,10 +423,20 @@ First we compute actual current orbital speed of Earth around Sun</p>
       <div class='octowrap'>
         <a class='octothorpe' href='#section-25'>#</a>
       </div>
-      <p>Output file</p>
+      <p>The program calculates the position and velocity vectors of Earth wrt Sun for
+a given day at midnight. The vectors are presented in the form of X, Y, Z 
+coordinates with Sun as the reference point (0,0,0). We use the vectors to
+compute the distance between the Sun and the Earth. The computed value is 
+around 1AU, which verifies the veracity of the computation. Similarly,
+we calculate the orbital velocity of Earth around Sun as around 30 km/s. 
+This value is also verified to be almost same as the calculated theoretical 
+value. </p>
+<p>This program can be used to identify the exact position and velocity of any
+planet with respect to other planet or the Sun. This information is useful for
+planning space missions. </p>
     </div>
     <div class='code'>
-      <div class="highlight"><pre>    <span class="n">outfile</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;E:\Data Science Projects\Space Science\SpaceScience-P1-EarthStateVectors\reports\outfile.txt&quot;</span><span class="p">,</span><span class="s2">&quot;w+&quot;</span><span class="p">)</span></pre></div>
+      <div class="highlight"><pre></pre></div>
     </div>
   </div>
   <div class='clearall'></div>
@@ -435,10 +445,10 @@ First we compute actual current orbital speed of Earth around Sun</p>
       <div class='octowrap'>
         <a class='octothorpe' href='#section-26'>#</a>
       </div>
-      <p>Call main function</p>
+      <h3><span id="run-the-script" href="run-the-script"> Run the script </span></h3>
     </div>
     <div class='code'>
-      <div class="highlight"><pre>    <span class="n">main</span><span class="p">()</span></pre></div>
+      <div class="highlight"><pre><span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span></pre></div>
     </div>
   </div>
   <div class='clearall'></div>
@@ -446,6 +456,30 @@ First we compute actual current orbital speed of Earth around Sun</p>
     <div class='docs'>
       <div class='octowrap'>
         <a class='octothorpe' href='#section-27'>#</a>
+      </div>
+      <p>Output file</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="n">outfile</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;E:\Data Science Projects\Space Science\SpaceScience-P1-EarthStateVectors\reports\outfile.txt&quot;</span><span class="p">,</span><span class="s2">&quot;w+&quot;</span><span class="p">)</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-28'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-28'>#</a>
+      </div>
+      <p>Call main function</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="n">main</span><span class="p">()</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-29'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-29'>#</a>
       </div>
       <p>Close output file</p>
     </div>

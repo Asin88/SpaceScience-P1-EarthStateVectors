@@ -154,7 +154,7 @@ def main():
     print(f"Current orbital speed of the Earth around the Sun in km/s: \
       {earth_orb_speed_wrt_sun}", file=outfile)
     
-    #Now we compute theoretical orbital speed of Earth around Sun
+     #Now we compute theoretical orbital speed of Earth around Sun
 #    
 #    For this, we need the equation to determine the orbital speed. We assume
 #    that the Sun's mass is greater than the mass of the Earth and we assume 
@@ -177,6 +177,22 @@ def main():
     #Report theoretical value
     print(f"Theoretical orbital speed of the Earth around the Sun in km/s: \
       {earth_orb_speed_wrt_sun_theory}", file=outfile)
+    
+# === Discussion of Output ===
+
+#The program calculates the position and velocity vectors of Earth wrt Sun for
+#a given day at midnight. The vectors are presented in the form of X, Y, Z 
+#coordinates with Sun as the reference point (0,0,0). We use the vectors to
+#compute the distance between the Sun and the Earth. The computed value is 
+#around 1AU, which verifies the veracity of the computation. Similarly,
+#we calculate the orbital velocity of Earth around Sun as around 30 km/s. 
+#This value is also verified to be almost same as the calculated theoretical 
+#value. 
+#
+#This program can be used to identify the exact position and velocity of any
+#planet with respect to other planet or the Sun. This information is useful for
+#planning space missions. 
+    
     
 # === Run the script ===
 if __name__ == "__main__":
