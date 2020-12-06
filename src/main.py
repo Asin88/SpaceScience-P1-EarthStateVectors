@@ -181,7 +181,7 @@ def main():
 # === Run the script ===
 if __name__ == "__main__":
     #Output file
-    outfile = open(r"E:\Data Science Projects\Space Science\SpaceScience-P1-EarthStateVectors\reports\outfile.txt","a+")
+    outfile = open(r"E:\Data Science Projects\Space Science\SpaceScience-P1-EarthStateVectors\reports\outfile.txt","w+")
     #Call main function
     main()
     #Close output file
